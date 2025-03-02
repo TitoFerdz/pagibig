@@ -1,1 +1,858 @@
 
+
+<!-- THIS FILE IS CONNECTED TO: https://docs.google.com/spreadsheets/d/16FFnJVQ2yAoMYyiaHz-6jjAVnDTjiOoZC5FjvaOkG8w/edit?usp=drive_link -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAG-IBIG MEMBERS</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+	
+    <!-- jQuery CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+	
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"/>
+	
+	
+    <style>
+		/* Style the pagination controls */
+		.dataTables_wrapper .dataTables_paginate .paginate_button {
+			  padding: 8px 16px;
+			  margin: 0 4px;
+			  border: 1px solid #ddd;
+			  background-color: #f9f9f9;
+			  color: #333;
+			  cursor: pointer;
+			  border-radius: 4px;
+			  transition: background-color 0.3s, color 0.3s;
+			}
+
+			.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+			  background-color: #e0e0e0;
+			  color: #000;
+			}
+
+		/* Style the search input */
+		.dataTables_wrapper .dataTables_filter input {
+			  padding: 6px 12px;
+			  margin-left: 8px;
+			  border: 1px solid #ddd;
+			  border-radius: 4px;
+			  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			  font-size: 14px;
+			}
+		/* Style the table header */
+		.dataTables_wrapper .dataTables_scrollHead th {
+			  background-color: #333;
+			  color: white;
+			  text-align: center;
+			  padding: 12px;
+			  border-bottom: 2px solid #444;
+			}
+
+		/* Style the table rows */
+		.dataTables_wrapper .dataTables_scrollBody tr:nth-child(even) {
+			  background-color: #f9f9f9;
+			}
+
+			.dataTables_wrapper .dataTables_scrollBody tr:hover {
+			  background-color: #f1f1f1;
+			  transition: background-color 0.3s;
+			}
+
+ 
+    </style>
+</head>
+<body>
+
+	<div class="container mt-4">
+	
+	<div class="col-md" style="text-align: center;">
+    <!-- Image at the top -->
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzY71S96ZGtabHtS5LyC5Df_aGdfBKLuAxkQ&s" 
+         alt="Top Image" width="75">
+    
+    <h4 class="mb-4">Pag-ibig sa Diyos Catholic Community</h4>
+	</div>
+		
+	
+	
+		<div class="container mt-4">
+		<h5 class="mb-1">Search for Members...</h5>
+			<div class="row g-3 mb-2">
+	
+				<div class="col-md">
+					<div class="form-floating">
+						<select id="pGroup" class="form-select" name="pGroup" onchange="postPGroup(this.value)" required>
+							<!-- Add pGroup options here -->
+						</select>
+						<label for="pGroup">Prayer Group</label>
+					</div>
+				</div>
+
+		
+		
+				<div class="col-md">
+					<div class="form-floating">
+						<select id="pgQuery1" class="form-select" name="pgQuery1" required>
+							<option value="" disabled selected>-- Search by: --</option>
+							<option value="MEMBER STATUS">STATUS</option>
+							<option value="BIRTH MONTH">BIRTH MONTH</option>
+							<option value="ANNIVERSARY">ANNIVERSARY</option>
+							<option value="SPIRITUAL JOURNEY">SPIRITUAL JOURNEY</option>
+							
+						</select>
+						<label for="pgQuery1">View List by:</label>
+					</div>
+				</div>
+				
+				
+				<div class="col-md">
+					<div class="form-floating">
+						<select id="pgQuery2" class="form-select" name="pgQuery2" required>
+							<option value="" disabled selected>-- Then Search by: --</option>
+							
+						</select>
+						<label for="pgQuery2">Filter List by:</label>
+					</div>
+				</div>
+				
+				<div class="col-md" id="pgQuery3Container" style="display: none;" >
+					<div class="form-floating">
+						<select id="pgQuery3" class="form-select" name="pgQuery3" >
+							<option value="" disabled selected>-- Select Options: --</option>
+						
+						</select>
+						<label for="pgQuery3">More Filter Options:</label>
+					</div>
+				</div>
+							
+			</div>
+			
+			<div class="row g-3 mb-2">
+				<div class="col-md d-flex justify-content-end">
+					
+			  <button type="button" class="btn btn-primary" id="btnGo" onclick="generateQuery()">Get List</button>
+              <button type="button" class="btn btn-secondary" id="saveAsPDF" onclick="saveAsPDF()" style="display: none;">Save as PDF</button>
+
+					
+				</div>
+			</div>
+			
+		</div>
+
+		<br> <!-- Adds a line break between the form and the div -->
+          
+		  <div class="col-md">
+			
+			<table id="dataTable" class="display" >
+				<thead>
+				  <tr id="tableHeaders">
+					<!-- Headers will be generated dynamically -->
+				  </tr>
+				</thead>
+				<tbody id="tableBody">
+				  <!-- Data will be generated dynamically -->
+				</tbody>
+			 </table>
+         
+          </div>
+		
+		
+		<br> <!-- Adds a line break between the form and the div -->
+	
+  <!-- place your web app URL here -->
+	  <form id="memberForm" style="display: none;" action="https://script.google.com/macros/s/AKfycbybbqJtol4Mfq_G45fLwdR_y6fqSa-TG0uGxEVzRVejDLB_HwgW8vqacJYj_Ldh_epE3g/exec" method="post">
+
+  <!-- start of the Form -->
+			
+	  <input type="hidden" id="recId" name="recId">
+
+      <input type="hidden" id="pgGrp" name="pgGrp" value="DIWANIHAN KRISTIYANO">
+
+        <h5 class="mb-1">Member Registration Form</h5>
+        
+			<div class="row g-3 mb-2">
+				
+					  <div class="col-md">
+					<div class="form-floating">
+						<input type="text" class="form-control" id="cLast" name="cLast"  required>
+						<label for="cLast">Family Name</label>
+					</div>
+				</div>
+							
+				<div class="col-md d-flex justify-content-end">
+					<div class="mt-3">
+						<button type="submit" class="btn btn-success" id="btnSave">Save</button>
+						<button type="reset" class="btn btn-dark" id="btnReset">Clear</button>
+					</div>
+				</div>
+			
+			</div>
+		
+			<div class="row g-3 mb-2">
+				
+				<div class="col-md">
+					<div class="form-floating">
+						<input type="text" class="form-control" id="hFirst" name="hFirst" required>
+						<label for="hFirst">Husband - First Name</label>
+					</div>
+				</div>
+			
+				<div class="col-md">
+					<div class="form-floating">
+						<input type="text" class="form-control" id="hPhone" name="hPhone" maxlength="13" oninput="formatPhone(this)" required>
+						<label for="hPhone">Husband - Phone</label>
+					</div>
+				</div>
+				
+				 <div class="col-md">
+					<div class="form-floating">
+						<input type="email" class="form-control" id="hEmail" name="hEmail" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+						<label for="hEmail">Husband - Email</label>
+					</div>
+				</div>
+				
+				<div class="col-md">
+					<div class="form-floating">
+						<input type="date" class="form-control" id="hBDate" name="hBDate" max="9999-12-31" required>
+						<label for="hBDate">Husband - Date of Birth</label>
+					</div>
+				</div>
+			</div>
+		
+			<div class="row g-3 mb-2">
+				
+				<div class="col-md">
+					<div class="form-floating">
+						<input type="text" class="form-control" id="wFirst" name="wFirst" required>
+						<label for="wFirst">Wife - First Name</label>
+					</div>
+				</div>
+			
+				<div class="col-md">
+					<div class="form-floating">
+						<input type="text" class="form-control" id="wPhone" name="wPhone" maxlength="13" oninput="formatPhone(this)" required>
+						<label for="wPhone">Wife - Phone</label>
+					</div>
+				</div>
+				
+				<div class="col-md">
+					<div class="form-floating">
+						<input type="email" class="form-control" id="wEmail" name="wEmail" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+						<label for="wEmail">Wife - Email</label>
+					</div>
+				</div>
+				
+				<div class="col-md">
+					<div class="form-floating">
+						<input type="date" class="form-control" id="wBDate" name="wBDate" max="9999-12-31" required>
+						<label for="wBDate">Wife - Date of Birth</label>
+					</div>
+				</div>
+			</div>
+		
+			
+			<div class="row g-3 mb-2">
+			
+				<div class="col-md-9"> <!-- Adjust width as needed -->
+					<div class="form-floating">
+						<textarea class="form-control" id="Address" name="Address"></textarea>
+						<label for="Address">Home Address</label>
+					</div>
+				</div>
+				
+				<div class="col-md-3">
+					<div class="form-floating">
+						<input type="date" class="form-control" id="Anniv" name="Anniv" required>
+						<label for="Anniv">Anniversary</label>
+					</div>
+				</div>
+				
+			</div>
+
+
+		
+		<h5 class="mb-1">Spiritual Journey</h5>
+		
+			<div class="row g-3 mb-3">
+								
+					<div class="col-md">
+						<div class="form-floating">
+							<input type="text" class="form-control" id="mew" name="mew" required>
+							<label for="mew">MEW</label>
+						</div>
+					</div>
+					
+					<div class="col-md">
+						<div class="form-floating">
+							<input type="text" class="form-control" id="lss" name="lss" required>
+							<label for="lss">LSS</label>
+						</div>
+					</div>
+					
+					<div class="col-md">
+						<div class="form-floating">
+							<input type="text" class="form-control" id="gss" name="gss" required>
+							<label for="gss">GSS</label>
+						</div>
+					</div>
+
+					<div class="col-md">
+						<div class="form-floating">
+							<input type="text" class="form-control" id="icw" name="icw" required>
+							<label for="icw">ICW</label>
+						</div>
+					</div>
+					
+					<div class="col-md">
+						<div class="form-floating">
+							<input type="text" class="form-control" id="lcr" name="lcr" required>
+							<label for="lcr">LCR</label>
+						</div>
+					</div>
+					
+					<div class="col-md">
+						<div class="form-floating">
+							<input type="text" class="form-control" id="ess" name="ess" required>
+							<label for="ess">ESS</label>
+						</div>
+					</div>
+					
+					<div class="col-md">
+						<div class="form-floating">
+							<input type="text" class="form-control" id="lfs" name="lfs" required>
+							<label for="lfs">LFS</label>
+						</div>
+					</div>
+
+					<div class="col-md">
+						<div class="form-floating">
+							<input type="text" class="form-control" id="sfs" name="sfs" required>
+							<label for="sfs">SFS</label>
+						</div>
+					</div>
+			
+			</div>				
+
+    
+        <h5 class="mb-1">Prayer Group</h5>
+        
+			<div class="row g-3 mb-2">
+				<div class="col-md">
+					<div class="form-floating">
+						<select id="pgPosition" class="form-select" name="pgPosition" required>
+							<option value="" disabled selected>-- Select Status --</option>
+							<option value="MEMBER">MEMBER</option>
+							<option value="WORKER">WORKER</option>
+							<option value="PRESIDING ELDER">PRESIDING ELDER</option>
+							<option value="DEPUTY PE">DEPUTY PE</option>
+							<option value="COUNCIL OF ELDERS">COUNCIL OF ELDERS</option>
+							<option value="SECRETARY">SECRETARY</option>
+							<option value="TREASURER">TREASURER</option>
+							<option value="MINISTRY HEAD">MINISTRY HEAD</option>
+							<option value="MINISTRY DEPUTY HEAD">MINISTRY DEPUTY HEAD</option>
+							<option value="MINISTRY ADVISING ELDER">MINISTRY ADVISING ELDER</option>
+							<option value="PG COORDINATOR">PG COORDINATOR</option>
+							<option value="PG DEPUTY COOR">PG DEPUTY COOR</option>
+							<option value="PG-ADVISING ELDER">PG-ADVISING ELDER</option>
+							<option value="PG-SECRETARY">PG-SECRETARY</option>
+							<option value="PG-TREASURER">PG-TREASURER</option>
+							<option value="PT1-HEAD">PT1-HEAD</option>
+							<option value="PT2-HEAD">PT2-HEAD</option>
+							<option value="PT3-HEAD">PT3-HEAD</option>
+							<option value="PT4-HEAD">PT4-HEAD</option>
+							<option value="PT5-HEAD">PT5-HEAD</option>
+							<option value="PT1-DEPUTY">PT1-DEPUTY</option>
+							<option value="PT2-DEPUTY">PT2-DEPUTY</option>
+							<option value="PT3-DEPUTY">PT3-DEPUTY</option>
+							<option value="PT4-DEPUTY">PT4-DEPUTY</option>
+							<option value="PT5-DEPUTY">PT5-DEPUTY</option>
+							<option value="MSG HEAD">MSG HEAD</option>
+							<option value="HIM SG HEAD">HIM SG HEAD</option>
+							<option value="LCA SG HEAD">LCA SG HEAD</option>
+							<option value="HOUSEHOLD HEAD">HOUSEHOLD HEAD</option>
+							
+						</select>
+						<label for="pgPosition">Member Status</label>
+					</div>
+				</div>
+				
+
+				<div class="col-md">
+					<div class="form-floating">
+            <select id="pgHousehold" class="form-select" name="pgHousehold">
+						 <option value="" disabled selected>-- Select Household --</option>
+							
+						</select>
+            <label for="pgHousehold">PG - Household</label>
+					</div>
+				</div>
+				
+				<div class="col-md">
+					<div class="form-floating">
+						<input type="text" class="form-control" id="pgShepherd" name="pgShepherd" >
+						<label for="pgShepherd">Shepherds</label>
+					</div>
+				</div>
+				
+				
+						
+			</div>
+	
+    </form>
+  
+	
+</div>
+
+	<br> <!-- Adds a line break between the form and the div -->
+  <br> <!-- Adds a line break between the form and the div -->
+
+
+<footer>
+
+  
+		<div style="display: flex; justify-content: center; align-items: center; text-align: center; width: 100%;">
+		  <p style="margin: 0;">
+			<a href="mailto:pdcc_672@yahoo.com">Secretariat FB Messenger</a> |
+			<a href="" target="_blank">Pagibig Official Website</a> | 
+			<a href="#" target="_blank" id="pgFile" style="visibility: hidden;">Go to Prayer Group's Page</a>
+		  </p>
+		</div>
+
+
+
+</footer>
+
+	<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+	<script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script>
+
+	const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbybbqJtol4Mfq_G45fLwdR_y6fqSa-TG0uGxEVzRVejDLB_HwgW8vqacJYj_Ldh_epE3g/exec";
+
+	
+	// Event listener for pgQuery1 changes
+			document.getElementById("pgQuery1").addEventListener("change", () => {
+				updatePgQuery2(); // If needed, call your existing function
+				togglePgQuery3(); // Update pgQuery3 options & visibility
+				
+				
+			});    
+			
+			function updatePgQuery2() {
+			const pgQuery1Value = document.getElementById("pgQuery1").value;
+			const pgQuery2 = document.getElementById("pgQuery2");
+
+			// Clear previous options
+			pgQuery2.innerHTML = '<option value="" disabled selected>-- Select Options: --</option>';
+
+				// Check pgQuery1 value and update pgQuery2 options
+				if (["COUPLE NAME", "BIRTH MONTH", "ANNIVERSARY", "MEMBER STATUS", "HOUSEHOLD", "SPIRITUAL JOURNEY"].includes(pgQuery1Value)) { // Include HOUSEHOLD here
+					if (pgQuery1Value === "SPIRITUAL JOURNEY") {
+						["MEW", "LSS", "GSS", "ICW", "LCR", "ESS", "LFS", "SFS"].forEach(option => {
+							pgQuery2.innerHTML += `<option value="${option}">${option}</option>`;
+						});
+					} else if (pgQuery1Value === "BIRTH MONTH" || pgQuery1Value === "ANNIVERSARY") {
+						["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST",
+						 "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"].forEach(option => {
+							pgQuery2.innerHTML += `<option value="${option}">${option}</option>`;
+						});
+					} else if (pgQuery1Value === "MEMBER STATUS") {
+						[
+							"ALL MEMBER", "WORKER", "PRESIDING ELDER", "DEPUTY PE", "COUNCIL OF ELDERS", "SECRETARY", "TREASURER",
+							"MINISTRY HEAD", "MINISTRY DEPUTY HEAD", "MINISTRY ADVISING ELDER", "PG COORDINATOR",
+							"PG DEPUTY COOR", "PG-ADVISING ELDER", "PG-SECRETARY", "PG-TREASURER",
+							"PT1-HEAD", "PT2-HEAD", "PT3-HEAD", "PT4-HEAD", "PT5-HEAD",
+							"PT1-DEPUTY", "PT2-DEPUTY", "PT3-DEPUTY", "PT4-DEPUTY", "PT5-DEPUTY",
+							"MSG HEAD", "HIM SG HEAD", "LCA", "HOUSEHOLD HEAD"
+						].forEach(option => {
+							pgQuery2.innerHTML += `<option value="${option}">${option}</option>`;
+						});
+					
+					} 
+				}
+			}
+	
+	
+			// Function to toggle pgQuery3 visibility based on pgQuery2 selection
+					  function togglePgQuery3() {
+						const pgQuery1Value = document.getElementById("pgQuery1").value;
+						const pgQuery3Container = document.getElementById("pgQuery3Container");
+						const pgQuery3 = document.getElementById("pgQuery3");
+
+						// Clear previous options
+						pgQuery3.innerHTML = '<option value="" disabled selected>-- Select Options: --</option>';
+
+						// Check pgQuery1 value and update pgQuery3 options & visibility
+						if (["SPIRITUAL JOURNEY", "BIRTH MONTH"].includes(pgQuery1Value)) {
+							pgQuery3Container.style.display = "block"; // Show pgQuery3
+							
+							if (pgQuery1Value === "SPIRITUAL JOURNEY") {
+								pgQuery3.innerHTML += '<option value="0">CANDIDATES</option>';
+								pgQuery3.innerHTML += '<option value="1">GRADUATES</option>';
+							} else if (pgQuery1Value === "BIRTH MONTH") {
+								pgQuery3.innerHTML += '<option value="HUSBAND">HUSBAND</option>';
+								pgQuery3.innerHTML += '<option value="WIFE">WIFE</option>';
+							}
+						} else {
+							pgQuery3Container.style.display = "none"; // Hide pgQuery3
+						}
+					}
+	
+	
+	// Fetch prayer group names to populate the dropdown and datalist on page load
+		window.onload = function () {
+		  const dropdownEndpoint = `${WEBAPP_URL}?action=getDropdownOptions`;// Replace with pgList list Web App URL
+		 
+		  // Fetch data for Dropdown
+		  fetch(dropdownEndpoint)
+			.then((response) => response.json())
+			.then((dropdownData) => {
+			  const dropdown = document.getElementById('pGroup');
+			  dropdown.innerHTML = '<option value="" disabled selected>-- Select Prayer Group Name --</option>'; // Clear previous options and add placeholder
+
+			  dropdownData.forEach((item) => {
+				const option = document.createElement('option');
+				option.value = item.pgName; // Use trade name for value
+				option.text = item.pgName; // Display trade name
+				dropdown.appendChild(option);
+			  });
+			})
+			.catch((error) => console.error('Error fetching dropdown data:', error));
+		}
+		
+	//
+		
+		          // Function to generate the query formula
+        function generateQuery() {
+            const pgQuery1Value = document.getElementById("pgQuery1").value;
+            const pgQuery2Value = document.getElementById("pgQuery2").value;
+            const pgQuery3Value = document.getElementById("pgQuery3").value;
+            
+            let queryFormula = '';
+			
+			if (pgQuery1Value === "SPIRITUAL JOURNEY" && pgQuery2Value === "MEW" && pgQuery3Value === "0") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT N, C, D, E, F, H, I, J, X WHERE N is null", 1)`;
+            } else if (pgQuery1Value === "SPIRITUAL JOURNEY" && pgQuery2Value === "MEW" && pgQuery3Value === "1") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT N, C, D, E, F, H, I, J, X WHERE N is not null", 1)`;
+			
+			} else if (pgQuery1Value === "SPIRITUAL JOURNEY" && pgQuery2Value === "LSS" && pgQuery3Value === "0") { // O has a value (not empty)
+				queryFormula = `=QUERY(DATA!A:Z, "SELECT O, C, D, E, F, H, I, J, X WHERE O is null", 1)`;
+			} else if (pgQuery1Value === "SPIRITUAL JOURNEY" && pgQuery2Value === "LSS" && pgQuery3Value === "1") {	// O is empty
+				queryFormula = `=QUERY(DATA!A:Z, "SELECT O, C, D, E, F, H, I, J, X WHERE O is not null", 1)`;
+			
+			} else if (pgQuery1Value === "SPIRITUAL JOURNEY" && pgQuery2Value === "GSS" && pgQuery3Value === "0") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT P, C, D, E, F, H, I, J, X WHERE P is null", 1)`;
+            } else if (pgQuery1Value === "SPIRITUAL JOURNEY" && pgQuery2Value === "GSS" && pgQuery3Value === "1") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT P, C, D, E, F, H, I, J, X WHERE P is not null", 1)`;
+
+            } else if (pgQuery1Value === "SPIRITUAL JOURNEY" && pgQuery2Value === "ICW" && pgQuery3Value === "0") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT Q, C, D, E, F, H, I, J, X WHERE Q is null", 1)`;
+            } else if (pgQuery1Value === "SPIRITUAL JOURNEY" && pgQuery2Value === "ICW" && pgQuery3Value === "1") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT Q, C, D, E, F, H, I, J, X WHERE Q is not null", 1)`;
+            
+            } else if (pgQuery1Value === "SPIRITUAL JOURNEY" && pgQuery2Value === "LCR" && pgQuery3Value === "0") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT R, C, D, E, F, H, I, J, X WHERE R is null", 1)`;
+            } else if (pgQuery1Value === "SPIRITUAL JOURNEY" && pgQuery2Value === "LCR" && pgQuery3Value === "1") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT R, C, D, E, F, H, I, J, X WHERE R is not null", 1)`;
+            
+            } else if (pgQuery1Value === "SPIRITUAL JOURNEY" && pgQuery2Value === "ESS" && pgQuery3Value === "0") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT S, C, D, E, F, H, I, J, X WHERE S is null", 1)`;
+            } else if (pgQuery1Value === "SPIRITUAL JOURNEY" && pgQuery2Value === "ESS" && pgQuery3Value === "1") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT S, C, D, E, F, H, I, J, X WHERE S is not null", 1)`;
+
+            } else if (pgQuery1Value === "SPIRITUAL JOURNEY" && pgQuery2Value === "LFS" && pgQuery3Value === "0") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT T, C, D, E, F, H, I, J, X WHERE T is null", 1)`;
+            } else if (pgQuery1Value === "SPIRITUAL JOURNEY" && pgQuery2Value === "LFS" && pgQuery3Value === "1") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT T, C, D, E, F, H, I, J, X WHERE T is not null", 1)`;
+            
+            } else if (pgQuery1Value === "SPIRITUAL JOURNEY" && pgQuery2Value === "SFS" && pgQuery3Value === "0") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT U, C, D, E, F, H, I, J, X WHERE U is null", 1)`;
+            } else if (pgQuery1Value === "SPIRITUAL JOURNEY" && pgQuery2Value === "SFS" && pgQuery3Value === "1") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT U, C, D, E, F, H, I, J, X WHERE U is not null", 1)`;
+                 
+            } else if (pgQuery1Value === "MEMBER STATUS" && pgQuery2Value === "ALL MEMBER") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, H, I, J, X WHERE V is not null", 1)`;
+			} else if (pgQuery1Value === "MEMBER STATUS" && pgQuery2Value === "WORKER") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, H, I, J, X WHERE V is not null", 1)`;
+            } else if (pgQuery1Value === "MEMBER STATUS" && pgQuery2Value === "PRESIDING ELDER") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, H, I, J, X WHERE V = 'PRESIDING ELDER'", 1)`;
+            } else if (pgQuery1Value === "MEMBER STATUS" && pgQuery2Value === "DEPUTY PE") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, H, I, J, X WHERE V = 'DEPUTY PE'", 1)`;
+            } else if (pgQuery1Value === "MEMBER STATUS" && pgQuery2Value === "COUNCIL OF ELDERS") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, H, I, J, X WHERE V = 'COUNCIL OF ELDERS'", 1)`;
+            } else if (pgQuery1Value === "MEMBER STATUS" && pgQuery2Value === "SECRETARY") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, H, I, J, X WHERE V = 'SECRETARY'", 1)`;
+            } else if (pgQuery1Value === "MEMBER STATUS" && pgQuery2Value === "TREASURER") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, H, I, J, X WHERE V = 'TREASURER'", 1)`;
+            } else if (pgQuery1Value === "MEMBER STATUS" && pgQuery2Value === "MINISTRY HEAD") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, H, I, J, X WHERE V = 'MINISTRY HEAD'", 1)`;
+            } else if (pgQuery1Value === "MEMBER STATUS" && pgQuery2Value === "MINISTRY DEPUTY HEAD") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, H, I, J, X WHERE V = 'MINISTRY DEPUTY HEAD'", 1)`;
+            } else if (pgQuery1Value === "MEMBER STATUS" && pgQuery2Value === "MINISTRY ADVISING ELDER") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, H, I, J, X WHERE V = 'MINISTRY ADVISING ELDER'", 1)`;
+            } else if (pgQuery1Value === "MEMBER STATUS" && pgQuery2Value === "PG COORDINATOR") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, H, I, J, X WHERE V = 'PG COORDINATOR'", 1)`;
+            } else if (pgQuery1Value === "MEMBER STATUS" && pgQuery2Value === "PG DEPUTY COOR") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, H, I, J, X WHERE V = 'PG DEPUTY COOR'", 1)`;
+            } else if (pgQuery1Value === "MEMBER STATUS" && pgQuery2Value === "PG-ADVISING ELDER") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, H, I, J, X WHERE V = 'PG-ADVISING ELDER'", 1)`;
+            } else if (pgQuery1Value === "MEMBER STATUS" && pgQuery2Value === "PG-SECRETARY") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, H, I, J, X WHERE V = 'PG-SECRETARY'", 1)`;
+            } else if (pgQuery1Value === "MEMBER STATUS" && pgQuery2Value === "PG-TREASURER") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, H, I, J, X WHERE V = 'PG-TREASURER'", 1)`;
+            } else if (pgQuery1Value === "MEMBER STATUS" && pgQuery2Value === "PT1-HEAD") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, H, I, J, X WHERE V = 'PT1-HEAD'", 1)`;
+            } else if (pgQuery1Value === "MEMBER STATUS" && pgQuery2Value === "PT2-HEAD") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, H, I, J, X WHERE V = 'PT2-HEAD'", 1)`;
+            } else if (pgQuery1Value === "MEMBER STATUS" && pgQuery2Value === "PT3-HEAD") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, H, I, J, X WHERE V = 'PT3-HEAD'", 1)`;
+            } else if (pgQuery1Value === "MEMBER STATUS" && pgQuery2Value === "PT4-HEAD") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, H, I, J, X WHERE V = 'PT4-HEAD'", 1)`;
+            } else if (pgQuery1Value === "MEMBER STATUS" && pgQuery2Value === "PT5-HEAD") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, H, I, J, X WHERE V = 'PT5-HEAD'", 1)`;
+            } else if (pgQuery1Value === "MEMBER STATUS" && pgQuery2Value === "PT1-DEPUTY") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, H, I, J, X WHERE V = 'PT1-DEPUTY'", 1)`;
+            } else if (pgQuery1Value === "MEMBER STATUS" && pgQuery2Value === "PT2-DEPUTY") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, H, I, J, X WHERE V = 'PT2-DEPUTY'", 1)`;
+            } else if (pgQuery1Value === "MEMBER STATUS" && pgQuery2Value === "PT3-DEPUTY") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, H, I, J, X WHERE V = 'PT3-DEPUTY'", 1)`;
+            } else if (pgQuery1Value === "MEMBER STATUS" && pgQuery2Value === "PT4-DEPUTY") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, H, I, J, X WHERE V = 'PT4-DEPUTY'", 1)`;
+            } else if (pgQuery1Value === "MEMBER STATUS" && pgQuery2Value === "PT5-DEPUTY") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, H, I, J, X WHERE V = 'PT5-DEPUTY'", 1)`;
+            } else if (pgQuery1Value === "MEMBER STATUS" && pgQuery2Value === "MSG HEAD") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, H, I, J, X WHERE V = 'MSG HEAD'", 1)`;
+            } else if (pgQuery1Value === "MEMBER STATUS" && pgQuery2Value === "HIM SG HEAD") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, H, I, J, X WHERE V = 'HIM SG HEAD'", 1)`;
+            } else if (pgQuery1Value === "MEMBER STATUS" && pgQuery2Value === "LCA SG HEADD") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, H, I, J, X WHERE V = 'LCA SG HEAD'", 1)`;
+            } else if (pgQuery1Value === "MEMBER STATUS" && pgQuery2Value === "HOUSEHOLD HEAD") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, H, I, J, X WHERE V = 'HOUSEHOLD HEAD'", 1)`;
+            
+            } else if (pgQuery1Value === "BIRTH MONTH" && pgQuery2Value === "JANUARY"&& pgQuery3Value === "HUSBAND") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, G WHERE MONTH(G) = 0", 1)`;
+            } else if (pgQuery1Value === "BIRTH MONTH" && pgQuery2Value === "FEBRUARY"&& pgQuery3Value === "HUSBAND") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, G WHERE MONTH(G) = 1", 1)`;
+            } else if (pgQuery1Value === "BIRTH MONTH" && pgQuery2Value === "MARCH"&& pgQuery3Value === "HUSBAND") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, G WHERE MONTH(G) = 2", 1)`;
+            } else if (pgQuery1Value === "BIRTH MONTH" && pgQuery2Value === "APRIL"&& pgQuery3Value === "HUSBAND") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, G WHERE MONTH(G) = 3", 1)`;
+            } else if (pgQuery1Value === "BIRTH MONTH" && pgQuery2Value === "MAY"&& pgQuery3Value === "HUSBAND") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, G WHERE MONTH(G) = 4", 1)`;
+            } else if (pgQuery1Value === "BIRTH MONTH" && pgQuery2Value === "JUNE"&& pgQuery3Value === "HUSBAND") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, G WHERE MONTH(G) = 5", 1)`;
+            } else if (pgQuery1Value === "BIRTH MONTH" && pgQuery2Value === "JULY"&& pgQuery3Value === "HUSBAND") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, G WHERE MONTH(G) = 6", 1)`;
+            } else if (pgQuery1Value === "BIRTH MONTH" && pgQuery2Value === "AUGUST"&& pgQuery3Value === "HUSBAND") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, G WHERE MONTH(G) = 7", 1)`;
+            } else if (pgQuery1Value === "BIRTH MONTH" && pgQuery2Value === "SEPTEMBER"&& pgQuery3Value === "HUSBAND") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, G WHERE MONTH(G) = 8", 1)`;
+            } else if (pgQuery1Value === "BIRTH MONTH" && pgQuery2Value === "OCTOBER"&& pgQuery3Value === "HUSBAND") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, G WHERE MONTH(G) = 9", 1)`;
+            } else if (pgQuery1Value === "BIRTH MONTH" && pgQuery2Value === "NOVEMBER"&& pgQuery3Value === "HUSBAND") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, G WHERE MONTH(G) = 10", 1)`;
+            } else if (pgQuery1Value === "BIRTH MONTH" && pgQuery2Value === "DECEMBER"&& pgQuery3Value === "HUSBAND") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, E, F, G WHERE MONTH(G) = 11", 1)`;
+            
+            
+            } else if (pgQuery1Value === "BIRTH MONTH" && pgQuery2Value === "JANUARY"&& pgQuery3Value === "WIFE") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, H, I, J, K WHERE MONTH(K) = 0", 1)`;
+            } else if (pgQuery1Value === "BIRTH MONTH" && pgQuery2Value === "FEBRUARY"&& pgQuery3Value === "WIFE") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, H, I, J, K WHERE MONTH(K) = 1", 1)`;
+            } else if (pgQuery1Value === "BIRTH MONTH" && pgQuery2Value === "MARCH"&& pgQuery3Value === "WIFE") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, H, I, J, K WHERE MONTH(K) = 2", 1)`;
+            } else if (pgQuery1Value === "BIRTH MONTH" && pgQuery2Value === "APRIL"&& pgQuery3Value === "WIFE") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, H, I, J, K WHERE MONTH(K) = 3", 1)`;
+            } else if (pgQuery1Value === "BIRTH MONTH" && pgQuery2Value === "MAY"&& pgQuery3Value === "WIFE") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, H, I, J, K WHERE MONTH(K) = 4", 1)`;
+            } else if (pgQuery1Value === "BIRTH MONTH" && pgQuery2Value === "JUNE"&& pgQuery3Value === "WIFE") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, H, I, J, K WHERE MONTH(K) = 5", 1)`;
+            } else if (pgQuery1Value === "BIRTH MONTH" && pgQuery2Value === "JULY"&& pgQuery3Value === "WIFE") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, H, I, J, K WHERE MONTH(K) = 6", 1)`;
+            } else if (pgQuery1Value === "BIRTH MONTH" && pgQuery2Value === "AUGUST"&& pgQuery3Value === "WIFE") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, H, I, J, K WHERE MONTH(K) = 7", 1)`;
+            } else if (pgQuery1Value === "BIRTH MONTH" && pgQuery2Value === "SEPTEMBER"&& pgQuery3Value === "WIFE") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, H, I, J, K WHERE MONTH(K) = 8", 1)`;
+            } else if (pgQuery1Value === "BIRTH MONTH" && pgQuery2Value === "OCTOBER"&& pgQuery3Value === "WIFE") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, H, I, J, K WHERE MONTH(K) = 9", 1)`;
+            } else if (pgQuery1Value === "BIRTH MONTH" && pgQuery2Value === "NOVEMBER"&& pgQuery3Value === "WIFE") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, H, I, J, K WHERE MONTH(K) = 10", 1)`;
+            } else if (pgQuery1Value === "BIRTH MONTH" && pgQuery2Value === "DECEMBER"&& pgQuery3Value === "WIFE") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, H, I, J, K WHERE MONTH(K) = 11", 1)`;
+            
+            } else if (pgQuery1Value === "ANNIVERSARY" && pgQuery2Value === "JANUARY"&& pgQuery3Value === "") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, H, M WHERE MONTH(M) = 0", 1)`;
+            }  else if (pgQuery1Value === "ANNIVERSARY" && pgQuery2Value === "FEBRUARY"&& pgQuery3Value === "") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, H, M WHERE MONTH(M) = 1", 1)`;
+            }  else if (pgQuery1Value === "ANNIVERSARY" && pgQuery2Value === "MARCH"&& pgQuery3Value === "") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, H, M WHERE MONTH(M) = 2", 1)`;
+            }  else if (pgQuery1Value === "ANNIVERSARY" && pgQuery2Value === "APRIL"&& pgQuery3Value === "") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, H, M WHERE MONTH(M) = 3", 1)`;
+            }  else if (pgQuery1Value === "ANNIVERSARY" && pgQuery2Value === "MAY"&& pgQuery3Value === "") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, H, M WHERE MONTH(M) = 4", 1)`;
+            }  else if (pgQuery1Value === "ANNIVERSARY" && pgQuery2Value === "JUNE"&& pgQuery3Value === "") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, H, M WHERE MONTH(M) = 5", 1)`;
+            }  else if (pgQuery1Value === "ANNIVERSARY" && pgQuery2Value === "JULY"&& pgQuery3Value === "") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, H, M WHERE MONTH(M) = 6", 1)`;
+            }  else if (pgQuery1Value === "ANNIVERSARY" && pgQuery2Value === "AUGUST"&& pgQuery3Value === "") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, H, M WHERE MONTH(M) = 7", 1)`;
+            }  else if (pgQuery1Value === "ANNIVERSARY" && pgQuery2Value === "SEPTEMBER"&& pgQuery3Value === "") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, H, M WHERE MONTH(M) = 8", 1)`;
+            }  else if (pgQuery1Value === "ANNIVERSARY" && pgQuery2Value === "OCTOBER"&& pgQuery3Value === "") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, H, M WHERE MONTH(M) = 9", 1)`;
+            }  else if (pgQuery1Value === "ANNIVERSARY" && pgQuery2Value === "NOVEMBER"&& pgQuery3Value === "") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, H, M WHERE MONTH(M) = 10", 1)`;
+            }  else if (pgQuery1Value === "ANNIVERSARY" && pgQuery2Value === "DECEMBER"&& pgQuery3Value === "") {
+                queryFormula = `=QUERY(DATA!A:Z, "SELECT C, D, H, M WHERE MONTH(M) = 11", 1)`;
+            
+            }   
+
+            updateSpreadsheet(queryFormula);
+			fetchDataAndInitializeTable();
+			fetchDataAndInitializeTable();
+						
+        }
+		
+				
+			function postPGroup(value) {
+		  const pgFileElement = document.getElementById('pgFile');
+		  
+		  // Hide the element and clear the href
+		  pgFileElement.style.visibility = "hidden";
+		  pgFileElement.href = "";
+
+		  // Make the POST request
+		  fetch(WEBAPP_URL, {
+			method: 'POST',
+			headers: {
+			  'Content-Type': 'application/x-www-form-urlencoded'
+			},
+			body: new URLSearchParams({
+			  'pGroup': value
+			})
+		  })
+		  .then(response => response.text())
+		  .then(data => {
+			console.log('Spreadsheet updated:', data);
+			
+			// Fetch the updated URL and update the element only once
+			fetchPGurl();
+		  })
+		  .catch(error => {
+			console.error('Error:', error);
+		  });
+		}
+
+		function fetchPGurl() {
+		  const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbybbqJtol4Mfq_G45fLwdR_y6fqSa-TG0uGxEVzRVejDLB_HwgW8vqacJYj_Ldh_epE3g/exec";
+		  
+		  fetch(`${WEBAPP_URL}?action=fetchSheetURL`)
+			.then(response => response.text())  // Expecting plain text response
+			.then(data => {
+			  const pgFileElement = document.getElementById('pgFile');
+			  if (data.trim()) { // Ensure data is not empty
+				pgFileElement.href = data;
+				pgFileElement.style.visibility = "visible"; // Show the element after setting the href
+			  } else {
+				console.error("Received empty URL");
+			  }
+			})
+			.catch(error => console.error('Error fetching URL:', error));
+		}
+
+
+    function updateSpreadsheet(queryFormula) {
+        
+		fetch(WEBAPP_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                'queryFormula': queryFormula
+            })
+        })
+        .then(response => response.text())
+        .then(data => {
+            console.log('Spreadsheet updated:', data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+		
+		//
+		
+function fetchDataAndInitializeTable() {
+  fetch('https://script.google.com/macros/s/AKfycbybbqJtol4Mfq_G45fLwdR_y6fqSa-TG0uGxEVzRVejDLB_HwgW8vqacJYj_Ldh_epE3g/exec?action=fetchTableData')
+    .then(response => {
+      console.log('Response received:', response); // Log the response object
+      return response.json();
+    })
+    .then(json => {
+      console.log('JSON received:', json); // Log the received JSON data
+      const data = json.data;
+      console.log('Fetched data:', data); // Log fetched data
+	  
+	 // Clear existing DataTable instance if it exists
+      if ($.fn.DataTable.isDataTable('#dataTable')) {
+        $('#dataTable').DataTable().clear().destroy();
+      }
+
+      // Clear existing table headers and body
+      document.getElementById('tableHeaders').innerHTML = '';
+      document.getElementById('tableBody').innerHTML = '';
+	 
+	 if (Array.isArray(data) && data.length > 0) {
+        const columns = Object.keys(data[0]);
+        console.log('Columns:', columns); // Log columns
+        
+        // Set table headers
+        const headers = columns.map(key => `<th>${key}</th>`).join('');
+        document.getElementById('tableHeaders').innerHTML = headers;
+        console.log('Headers set:', headers); // Log headers
+
+        // Set table body
+        const rows = data.map(row => {
+          const cells = columns.map(col => {
+            if (['H_BDAY', 'W_BDAY', 'ANNIVERSARY'].includes(col) && row[col]) {
+              const date = new Date(row[col]);
+              const formattedDate = date.toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: 'short',
+                year: '2-digit'
+              }).replace(/ /g, '-'); // Format date as DD-MMM-YY
+              return `<td>${formattedDate}</td>`;
+            }
+            return `<td>${row[col]}</td>`;
+          }).join('');
+          return `<tr>${cells}</tr>`;
+        }).join('');
+        document.getElementById('tableBody').innerHTML = rows;
+        console.log('Rows set:', rows); // Log rows
+
+        // Initialize DataTable
+        $('#dataTable').DataTable();
+      } else {
+        console.error('Invalid data format or no data available:', data);
+      }
+    })
+    .catch(error => console.error('Error fetching data:', error));
+}
+
+	
+</script>
+
+
+
+	
+	
+</body>
+</html>
+
