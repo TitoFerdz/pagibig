@@ -827,14 +827,15 @@ function fetchDataAndInitializeTable() {
 		const localOffset = date.getTimezoneOffset() * 60000;
 		const localDate = new Date(date.getTime() - localOffset);
 		
-		// Format the date properly as DD-MMM-YY
-		const day = localDate.getDate().toString().padStart(2, '0'); // Ensure 2-digit day
-		const month = localDate.toLocaleString('en-GB', { month: 'short' }); // Short month name
-		const year = localDate.getFullYear().toString().slice(-2); // Get last 2 digits of year
+		// Extract and format date components manually
+		const day = String(localDate.getDate()).padStart(2, '0'); // Ensure two-digit day
+		const month = localDate.toLocaleDateString('en-US', { month: 'short' }); // Short month name
+		const year = String(localDate.getFullYear()).slice(-2); // Get last 2 digits of year
 		
-		const formattedDate = `${day}-${month}-${year}`; // Combine into proper format
+		const formattedDate = `${day}-${month}-${year}`; // Correct format
 		
 		return `<td>${formattedDate}</td>`;
+
 	  }
 		  
             return `<td>${row[col]}</td>`;
