@@ -7,7 +7,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PAG-IBIG MEMBERS</title>
+    <title>PAGIBIG</title>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -714,7 +714,7 @@
 
             updateSpreadsheet(queryFormula);
 			fetchDataAndInitializeTable();
-			
+			fetchDataAndInitializeTable();
 						
         }
 		
@@ -790,66 +790,69 @@
 		
 function fetchDataAndInitializeTable() {
   fetch('https://script.google.com/macros/s/AKfycbybbqJtol4Mfq_G45fLwdR_y6fqSa-TG0uGxEVzRVejDLB_HwgW8vqacJYj_Ldh_epE3g/exec?action=fetchTableData')
-    .then(response => response.json())
+    .then(response => {
+      console.log('Response received:', response); // Log the response object
+      return response.json();
+    })
     .then(json => {
-      console.log('Raw data received:', JSON.stringify(json, null, 2)); // Debug full data response
-      
+      console.log('JSON received:', json); // Log the received JSON data
       const data = json.data;
-      if (!Array.isArray(data) || data.length === 0 || !data.some(row => row)) {
-        console.error('No valid data found.');
-        return;
-      }
-
-      // Clear existing DataTable instance
+      console.log('Fetched data:', data); // Log fetched data
+	  
+	 // Clear existing DataTable instance if it exists
       if ($.fn.DataTable.isDataTable('#dataTable')) {
         $('#dataTable').DataTable().clear().destroy();
       }
 
-      // Clear table headers and body
-      $('#tableHeaders').empty();
-      $('#tableBody').empty();
+      // Clear existing table headers and body
+      document.getElementById('tableHeaders').innerHTML = '';
+      document.getElementById('tableBody').innerHTML = '';
+	 
+	 if (Array.isArray(data) && data.length > 0) {
+        const columns = Object.keys(data[0]);
+        console.log('Columns:', columns); // Log columns
+        
+        // Set table headers
+        const headers = columns.map(key => `<th>${key}</th>`).join('');
+        document.getElementById('tableHeaders').innerHTML = headers;
+        console.log('Headers set:', headers); // Log headers
 
-      const validData = data.filter(row => row && Object.keys(row).length > 0); // Remove empty rows
-      const columns = Object.keys(validData[0]);
-      
-      // Set table headers
-      const headers = columns.map(key => `<th>${key}</th>`).join('');
-      $('#tableHeaders').html(headers);
+        // Set table body
+        const rows = data.map(row => {
+          const cells = columns.map(col => {
+            if (['H_BDAY', 'W_BDAY', 'ANNIVERSARY'].includes(col) && row[col]) {
+              const date = new Date(row[col]);
 
-      // Set table body
-      const rows = validData.map(row => {
-        const cells = columns.map(col => {
-          if (['H_BDAY', 'W_BDAY', 'ANNIVERSARY'].includes(col) && row[col]) {
-            return `<td>${formatDate(row[col])}</td>`;
-          }
-          return `<td>${row[col] !== undefined ? row[col] : ''}</td>`; 
-        });
-        return `<tr>${cells.join('')}</tr>`;
-      }).join('');
+			// Adjust the date for local timezone offset
+			const localOffset = date.getTimezoneOffset() * 60000; 
+			const localDate = new Date(date.getTime() - localOffset);
 
-      $('#tableBody').append(rows); // Use `.append()` instead of `.innerHTML`
+			// Format as DD-MMM-YY
+			const formattedDate = localDate.toLocaleDateString('en-GB', {
+			  day: '2-digit',
+			  month: 'short',
+			  year: '2-digit'
+			}).replace(/ /g, '-');
 
-      // Initialize DataTable
-      $('#dataTable').DataTable();
+			return `<td>${formattedDate}</td>`;
+
+            }
+            return `<td>${row[col]}</td>`;
+          }).join('');
+          return `<tr>${cells}</tr>`;
+        }).join('');
+        document.getElementById('tableBody').innerHTML = rows;
+        console.log('Rows set:', rows); // Log rows
+
+        // Initialize DataTable
+        $('#dataTable').DataTable();
+      } else {
+        console.error('Invalid data format or no data available:', data);
+      }
     })
     .catch(error => console.error('Error fetching data:', error));
 }
 
-
-		function formatDate(isoString) {
-		   const date = new Date(isoString);
-		   if (isNaN(date.getTime())) return "Invalid Date"; // Handle bad inputs
-		   
-		   const localOffset = date.getTimezoneOffset(); // Get local offset in minutes
-		   const localDate = new Date(date.getTime() - localOffset * 60000); // Adjust for local offset
-
-		   // Format the adjusted date as 'DD-MMM-YY'
-		   return localDate.toLocaleDateString('en-US', {
-			 day: '2-digit',
-			 month: 'short',
-			 year: '2-digit'
-		   }).replace(/ /g, '-');
-		}
 	
 </script>
 
