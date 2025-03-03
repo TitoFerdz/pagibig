@@ -819,14 +819,16 @@ function fetchDataAndInitializeTable() {
 
         // Set table body
         const rows = data.map(row => {
-		   const cells = columns.map(col => {
-			  if (['H_BDAY', 'W_BDAY', 'ANNIVERSARY'].includes(col) && row[col]) {
-				 return `<td>${formatDate(row[col])}</td>`;
-			  }
-			  return `<td>${row[col] || ''}</td>`; // Default for other fields
-		   });
-		   return `<tr>${cells.join('')}</tr>`;
-		});
+	  const cells = columns.map(col => {
+	    if (['H_BDAY', 'W_BDAY', 'ANNIVERSARY'].includes(col) && row[col]) {
+	      return `<td>${formatDate(row[col])}</td>`;
+	    }
+	    return `<td>${row[col] !== undefined ? row[col] : ''}</td>`; // Ensure no `undefined`
+	  });
+	
+	  return `<tr>${cells.join('')}</tr>`;
+	}).join(''); // Join rows properly to avoid extra commas
+
 
         document.getElementById('tableBody').innerHTML = rows;
         console.log('Rows set:', rows); // Log rows
