@@ -1,5 +1,4 @@
 
-
 <!-- THIS FILE IS CONNECTED TO: https://docs.google.com/spreadsheets/d/16FFnJVQ2yAoMYyiaHz-6jjAVnDTjiOoZC5FjvaOkG8w/edit?usp=drive_link -->
 
 
@@ -820,32 +819,41 @@ function fetchDataAndInitializeTable() {
 
         // Set table body
         const rows = data.map(row => {
-          const cells = columns.map(col => {
-            if (['H_BDAY', 'W_BDAY', 'ANNIVERSARY'].includes(col) && row[col]) {
-              const date = new Date(row[col]);
-              const formattedDate = date.toLocaleDateString('en-GB', {
-                day: '2-digit',
-                month: 'short',
-                year: '2-digit'
-              }).replace(/ /g, '-'); // Format date as DD-MMM-YY
-              return `<td>${formattedDate}</td>`;
-            }
-            return `<td>${row[col]}</td>`;
-          }).join('');
-          return `<tr>${cells}</tr>`;
-        }).join('');
+		   const cells = columns.map(col => {
+			  if (['H_BDAY', 'W_BDAY', 'ANNIVERSARY'].includes(col) && row[col]) {
+				 return `<td>${formatDate(row[col])}</td>`;
+			  }
+			  return `<td>${row[col] || ''}</td>`; // Default for other fields
+		   });
+		   return `<tr>${cells.join('')}</tr>`;
+		});
+
         document.getElementById('tableBody').innerHTML = rows;
         console.log('Rows set:', rows); // Log rows
 
-        // Initialize DataTable
-        $('#dataTable').DataTable();
-      } else {
-        console.error('Invalid data format or no data available:', data);
-      }
-    })
-    .catch(error => console.error('Error fetching data:', error));
-}
+				// Initialize DataTable
+				$('#dataTable').DataTable();
+			  } else {
+				console.error('Invalid data format or no data available:', data);
+			  }
+			})
+			.catch(error => console.error('Error fetching data:', error));
+		}
 
+		function formatDate(isoString) {
+		   const date = new Date(isoString);
+		   if (isNaN(date.getTime())) return "Invalid Date"; // Handle bad inputs
+		   
+		   const localOffset = date.getTimezoneOffset(); // Get local offset in minutes
+		   const localDate = new Date(date.getTime() - localOffset * 60000); // Adjust for local offset
+
+		   // Format the adjusted date as 'DD-MMM-YY'
+		   return localDate.toLocaleDateString('en-GB', {
+			 day: '2-digit',
+			 month: 'short',
+			 year: '2-digit'
+		   }).replace(/ /g, '-');
+		}
 	
 </script>
 
