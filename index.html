@@ -790,57 +790,51 @@
 		
 function fetchDataAndInitializeTable() {
   fetch('https://script.google.com/macros/s/AKfycbybbqJtol4Mfq_G45fLwdR_y6fqSa-TG0uGxEVzRVejDLB_HwgW8vqacJYj_Ldh_epE3g/exec?action=fetchTableData')
-    .then(response => {
-      console.log('Response received:', response); // Log the response object
-      return response.json();
-    })
+    .then(response => response.json())
     .then(json => {
-      console.log('JSON received:', json); // Log the received JSON data
+      console.log('Raw data received:', JSON.stringify(json, null, 2)); // Debug full data response
+      
       const data = json.data;
-      console.log('Fetched data:', data); // Log fetched data
-	  
-	 // Clear existing DataTable instance if it exists
+      if (!Array.isArray(data) || data.length === 0 || !data.some(row => row)) {
+        console.error('No valid data found.');
+        return;
+      }
+
+      // Clear existing DataTable instance
       if ($.fn.DataTable.isDataTable('#dataTable')) {
         $('#dataTable').DataTable().clear().destroy();
       }
 
-      // Clear existing table headers and body
-      document.getElementById('tableHeaders').innerHTML = '';
-      document.getElementById('tableBody').innerHTML = '';
-	 
-	 if (Array.isArray(data) && data.length > 0) {
-        const columns = Object.keys(data[0]);
-        console.log('Columns:', columns); // Log columns
-        
-        // Set table headers
-        const headers = columns.map(key => `<th>${key}</th>`).join('');
-        document.getElementById('tableHeaders').innerHTML = headers;
-        console.log('Headers set:', headers); // Log headers
+      // Clear table headers and body
+      $('#tableHeaders').empty();
+      $('#tableBody').empty();
 
-        // Set table body
-        const rows = data.map(row => {
-	  const cells = columns.map(col => {
-	    if (['H_BDAY', 'W_BDAY', 'ANNIVERSARY'].includes(col) && row[col]) {
-	      return `<td>${formatDate(row[col])}</td>`;
-	    }
-	    return `<td>${row[col] !== undefined ? row[col] : ''}</td>`; // Ensure no `undefined`
-	  });
-	
-	  return `<tr>${cells.join('')}</tr>`;
-	}).join(''); // Join rows properly to avoid extra commas
+      const validData = data.filter(row => row && Object.keys(row).length > 0); // Remove empty rows
+      const columns = Object.keys(validData[0]);
+      
+      // Set table headers
+      const headers = columns.map(key => `<th>${key}</th>`).join('');
+      $('#tableHeaders').html(headers);
 
+      // Set table body
+      const rows = validData.map(row => {
+        const cells = columns.map(col => {
+          if (['H_BDAY', 'W_BDAY', 'ANNIVERSARY'].includes(col) && row[col]) {
+            return `<td>${formatDate(row[col])}</td>`;
+          }
+          return `<td>${row[col] !== undefined ? row[col] : ''}</td>`; 
+        });
+        return `<tr>${cells.join('')}</tr>`;
+      }).join('');
 
-        document.getElementById('tableBody').innerHTML = rows;
-        console.log('Rows set:', rows); // Log rows
+      $('#tableBody').append(rows); // Use `.append()` instead of `.innerHTML`
 
-				// Initialize DataTable
-				$('#dataTable').DataTable();
-			  } else {
-				console.error('Invalid data format or no data available:', data);
-			  }
-			})
-			.catch(error => console.error('Error fetching data:', error));
-		}
+      // Initialize DataTable
+      $('#dataTable').DataTable();
+    })
+    .catch(error => console.error('Error fetching data:', error));
+}
+
 
 		function formatDate(isoString) {
 		   const date = new Date(isoString);
@@ -850,7 +844,7 @@ function fetchDataAndInitializeTable() {
 		   const localDate = new Date(date.getTime() - localOffset * 60000); // Adjust for local offset
 
 		   // Format the adjusted date as 'DD-MMM-YY'
-		   return localDate.toLocaleDateString('en-GB', {
+		   return localDate.toLocaleDateString('en-US', {
 			 day: '2-digit',
 			 month: 'short',
 			 year: '2-digit'
