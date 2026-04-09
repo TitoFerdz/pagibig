@@ -517,8 +517,6 @@
 		}
 
 		function fetchPGurl() {
-		  const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwl2bkvI-IrDU4TLXTpVye22PmLU8eDDesQmfqYvebGbFLKFv-aDT5lvGTgQby3BuSl/exec";
-		  
 		  fetch(`${WEBAPP_URL}?action=fetchSheetURL`)
 			.then(response => response.text())  // Expecting plain text response
 			.then(data => {
