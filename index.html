@@ -323,6 +323,7 @@
 	
 	// Fetch prayer group names to populate the dropdown and datalist on page load
 		window.onload = function () {
+		  const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxxTLnuYpStlRin-j410-GCLjUpGSE85uNYmiHourbASJwt9A7Mnp4JmgQ5B5wpzhjbPg/exec";	
 		  const dropdownEndpoint = `${WEBAPP_URL}?action=getDropdownOptions`;// Replace with pgList list Web App URL
 		 
 		  // Fetch data for Dropdown
